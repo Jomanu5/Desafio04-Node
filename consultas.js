@@ -23,12 +23,25 @@ const getPost = async() =>{
 }
 
 
-const agregarPost = async(titulo,img,descripcion) =>{
-    const consulta ="INSERT INTO posts (titulo,img,descripcion, likes) VALUES ($1,$2,$3, 0)"
-    const values = [titulo,img,descripcion];
-    const result = await pool.query(consulta,values);
-    console.log('post agregado');
-}
+// CÓDIGO SOLUCIONADO en consultas.js:
+const agregarPost = async (titulo, img, descripcion) => {
+    // 1. CAMBIO CLAVE: Agregamos RETURNING *
+    const consulta = "INSERT INTO posts (titulo,img,descripcion, likes) VALUES ($1,$2,$3, 0) RETURNING *"; 
+    
+    const values = [titulo, img, descripcion];
+    const result = await pool.query(consulta, values);
+
+    // 2. CAMBIO CLAVE: Devolvemos el objeto post completo
+    return result.rows[0]; 
+};
+
+// const agregarPost = async(titulo,img,descripcion) =>{
+//     const consulta ="INSERT INTO posts (titulo,img,descripcion, likes) VALUES ($1,$2,$3, 0)"
+//     const values = [titulo,img,descripcion];
+//     const result = await pool.query(consulta,values);
+//     console.log('post agregado');
+//     return result.rows[0];
+// }
 
 const likePost = async (id) => {
     const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1";
